@@ -313,8 +313,8 @@ export default function Footer() {
                   Vikas Kumar Jain
                 </h3> */}
             <p className="text-gray-400 text-xl leading-relaxed max-w-md">
-              Software Developer at <span className="text-white font-bold">Hawkscode Pvt. Ltd</span>[cite: 6, 7]. 
-              Architecting the next generation of mobile and cloud experiences[cite: 19, 20].
+              Software Developer at <span className="text-white font-bold">Hawkscode Pvt. Ltd</span>. 
+              Architecting the next generation of mobile and cloud experiences.
             </p>
             <div className="flex gap-4">
               {[

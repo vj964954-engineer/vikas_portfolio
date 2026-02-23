@@ -22,6 +22,14 @@ function UltraAdvancedParticleBackground() {
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
     
+    // Handle window resize for mobile responsiveness
+    const handleResize = () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+    
+    window.addEventListener('resize', handleResize)
+    
     // Professional particle system with advanced features
     interface AdvancedParticle {
       x: number
@@ -329,13 +337,14 @@ function UltraAdvancedParticleBackground() {
     
     return () => {
       canvas.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('resize', handleResize)
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
       }
     }
   }, [])
   
-  return <canvas ref={canvasRef} className="absolute inset-0" />
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 }
 
 // Professional 3D Geometric Shapes
@@ -558,15 +567,26 @@ export default function Hero() {
       onMouseMove={handleMouseMove}
       onClick={handleClick}
     >
-      <div className="absolute inset-0">
-        <UltraAdvancedParticleBackground />
+      {/* 3D Background Container - Fixed positioning */}
+      <div className="absolute inset-0 w-full h-full overflow-hidden">
+        <div className="absolute inset-0 w-full h-full">
+          <UltraAdvancedParticleBackground />
+        </div>
       </div>
 
-      <Professional3DShapes />
-      <UltraAdvancedConfetti show={showConfetti} />
+      {/* 3D Shapes - Properly contained */}
+      <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+        <Professional3DShapes />
+      </div>
+      
+      {/* Confetti - Properly contained */}
+      <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+        <UltraAdvancedConfetti show={showConfetti} />
+      </div>
 
+      {/* Main Content - Properly positioned and contained */}
       <motion.div 
-        className="relative z-10 text-center px-4 max-w-7xl mx-auto"
+        className="relative z-10 text-center px-3 sm:px-4 max-w-7xl mx-auto w-full"
         style={{ y: springY, opacity: springOpacity }}
       >
         <motion.div
@@ -575,9 +595,9 @@ export default function Hero() {
           transition={{ duration: 1, delay: 0.5 }}
           className="space-y-8"
         >
-          {/* 3D Title */}
+          {/* 3D Title - Responsive sizing */}
           <motion.h1 
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white tracking-wider px-4"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold text-white tracking-wider px-2 sm:px-4"
             whileHover={{ scale: 1.05, rotateZ: 2 }}
             style={{
               textShadow: isHovered ? 
@@ -591,56 +611,56 @@ export default function Hero() {
             </span>
           </motion.h1>
           
-          {/* Subtitle */}
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1, delay: 0.8 }} className="mb-8 px-4">
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-gray-300 mb-4 font-semibold">
+          {/* Subtitle - Responsive spacing */}
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1, delay: 0.8 }} className="mb-6 sm:mb-8 px-2 sm:px-4">
+            <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl text-gray-300 mb-3 sm:mb-4 font-semibold">
               <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
                 Professional App Developer & Mobile Expert
               </span>
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed px-4">
-              Expert Software Developer specializing in Android and iOS applications[cite: 7, 10]. 
-              Created numerous mobile apps using Java, Kotlin, and Swift UI[cite: 27, 47].
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed px-2 sm:px-4">
+              Expert Software Developer specializing in Android and iOS applications. 
+              Created numerous mobile apps using Java, Kotlin, and Swift UI.
             </p>
           </motion.div>
 
-          {/* Interactive Stats */}
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1, delay: 1.1 }} className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 mb-8 md:mb-12 px-4">
+          {/* Interactive Stats - Responsive layout */}
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1, delay: 1.1 }} className="flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 lg:gap-8 mb-6 sm:mb-8 md:mb-12 px-2 sm:px-4">
             {[
               { number: "50+", label: "Mobile Apps Created", icon: FaMobile, color: "from-blue-500 to-cyan-500" },
               { number: "5+", label: "Years Experience", icon: FaRocket, color: "from-purple-500 to-pink-500" },
               { number: "3", label: "Platforms Mastered", icon: FaStar, color: "from-green-500 to-emerald-500" },
               { number: "100%", label: "App Store Success", icon: FaHeart, color: "from-red-500 to-rose-500" }
             ].map((stat, index) => (
-              <motion.div key={index} whileHover={{ y: -10, scale: 1.1 }} className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 p-4 sm:p-6 md:p-8 rounded-2xl md:rounded-3xl border border-white/10 group min-w-[140px] sm:min-w-[160px]">
-                <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 mb-2 sm:mb-4">
-                  <div className={`p-2 sm:p-4 rounded-xl md:rounded-2xl bg-gradient-to-r ${stat.color} text-white`}>
-                    <stat.icon className="text-lg sm:text-xl md:text-2xl" />
+              <motion.div key={index} whileHover={{ y: -10, scale: 1.1 }} className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 p-3 sm:p-4 md:p-6 lg:p-8 rounded-xl sm:rounded-2xl md:rounded-3xl border border-white/10 group min-w-[120px] sm:min-w-[140px] md:min-w-[160px]">
+                <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 md:gap-4 mb-2 sm:mb-4">
+                  <div className={`p-2 sm:p-3 md:p-4 rounded-xl md:rounded-2xl bg-gradient-to-r ${stat.color} text-white`}>
+                    <stat.icon className="text-base sm:text-lg md:text-xl lg:text-2xl" />
                   </div>
-                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-white group-hover:text-blue-400 transition-colors">{stat.number}</div>
+                  <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white group-hover:text-blue-400 transition-colors">{stat.number}</div>
                 </div>
-                <p className="text-gray-400 text-sm sm:text-base md:text-lg group-hover:text-gray-300 transition-colors text-center">{stat.label}</p>
+                <p className="text-gray-400 text-xs sm:text-sm md:text-base lg:text-lg group-hover:text-gray-300 transition-colors text-center">{stat.label}</p>
               </motion.div>
             ))}
           </motion.div>
 
-          {/* CTA Buttons - FIXED NESTING HERE */}
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1, delay: 1.4 }} className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-8 md:mb-12 px-4">
-            <motion.button onClick={handleDownload} disabled={isDownloading} whileHover={{ scale: 1.05, rotateX: 10 }} className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-5 rounded-full font-bold flex items-center justify-center gap-2 sm:gap-3 border-b-4 border-blue-900 shadow-xl overflow-hidden">
+          {/* CTA Buttons - Responsive sizing */}
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1, delay: 1.4 }} className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-6 justify-center mb-6 sm:mb-8 md:mb-12 px-2 sm:px-4">
+            <motion.button onClick={handleDownload} disabled={isDownloading} whileHover={{ scale: 1.05, rotateX: 10 }} className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-4 sm:px-6 md:px-8 lg:px-12 py-2 sm:py-3 md:py-4 lg:py-5 rounded-full font-bold flex items-center justify-center gap-2 sm:gap-3 border-b-4 border-blue-900 shadow-xl overflow-hidden">
                <span className="relative z-10 flex items-center gap-2 sm:gap-3">
-                 {isDownloading ? <><FaRocket className="animate-spin" /> <span className="hidden sm:inline">Compiling...</span><span className="sm:hidden">Loading...</span></> : <><FaDownload /> <span className="hidden sm:inline">Download Resume</span><span className="sm:hidden">Resume</span></>}
+                 {isDownloading ? <><FaRocket className="animate-spin" /> <span className="hidden sm:inline">Compiling...</span><span className="sm:hidden">Loading...</span></> : <><FaDownload /> <span className="hidden xs:inline">Download Resume</span><span className="xs:hidden">Download Resume</span></>}
                </span>
             </motion.button>
 
-            <motion.button onClick={scrollToContact} whileHover={{ scale: 1.05, rotateX: -5 }} className="bg-gradient-to-r from-green-500 via-emerald-500 to-cyan-500 text-white px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-5 rounded-full font-semibold flex items-center justify-center gap-2 sm:gap-3 border-b-4 border-green-900 shadow-xl">
-              <FaEnvelope /> <span className="hidden sm:inline">Contact Me</span><span className="sm:hidden">Contact</span>
+            <motion.button onClick={scrollToContact} whileHover={{ scale: 1.05, rotateX: -5 }} className="bg-gradient-to-r from-green-500 via-emerald-500 to-cyan-500 text-white px-4 sm:px-6 md:px-8 lg:px-12 py-2 sm:py-3 md:py-4 lg:py-5 rounded-full font-semibold flex items-center justify-center gap-2 sm:gap-3 border-b-4 border-green-900 shadow-xl">
+              <FaEnvelope /> <span className="hidden xs:inline">Contact Me</span><span className="xs:hidden">Contact</span>
             </motion.button>
-          </motion.div> {/* <--- THIS WAS MISSING */}
+          </motion.div>
 
-          {/* Social Links */}
-          <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 1, delay: 1.6 }} className="flex gap-4 sm:gap-6 md:gap-8 justify-center mb-8 md:mb-12">
+          {/* Social Links - Responsive spacing */}
+          <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 1, delay: 1.6 }} className="flex gap-3 sm:gap-4 md:gap-6 lg:gap-8 justify-center mb-6 sm:mb-8 md:mb-12">
             {socialLinks.map((social, index) => (
-              <motion.a key={index} href={social.href} whileHover={{ scale: 1.3, rotate: 360 }} className="text-white text-2xl sm:text-3xl hover:text-blue-400 transition-colors">
+              <motion.a key={index} href={social.href} whileHover={{ scale: 1.3, rotate: 360 }} className="text-white text-xl sm:text-2xl md:text-3xl hover:text-blue-400 transition-colors">
                 <social.icon />
               </motion.a>
             ))}

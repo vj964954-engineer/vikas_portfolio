@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { motion, useInView, useScroll, useTransform, useSpring } from "framer-motion"
+import { motion, useInView, useScroll, useTransform, useSpring, useReducedMotion } from "framer-motion"
 import { FaCalendar, FaLinkedin, FaExternalLinkAlt, FaArrowRight, FaClock, FaEye, FaCode, FaDatabase, FaMobile, FaGlobe, FaLayerGroup } from "react-icons/fa"
 
 const blogPosts = [
@@ -232,6 +232,8 @@ export default function Blog() {
   const isInView = useInView(ref, { once: false, amount: 0.1 })
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isMobile, setIsMobile] = useState(false)
+  const shouldReduceMotion = useReducedMotion()
   
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -244,6 +246,20 @@ export default function Blog() {
   const scale = useSpring(1, springConfig)
   
   useEffect(() => {
+    const checkMobile = () => {
+      const width = window.innerWidth
+      setIsMobile(width < 640) // Changed from 768 to 640 for better small tablet handling
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+  
+  useEffect(() => {
+    if (isMobile || shouldReduceMotion) return
+    
     const handleMouseMove = (e: MouseEvent) => {
       if (ref.current) {
         const rect = ref.current.getBoundingClientRect()
@@ -255,7 +271,7 @@ export default function Blog() {
     
     window.addEventListener('mousemove', handleMouseMove)
     return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [])
+  }, [isMobile, shouldReduceMotion])
 
   const categories = ["All", "Java Development", "Mobile Development", "Web Development", "Data Engineering"]
   
@@ -272,301 +288,328 @@ export default function Blog() {
     : blogPosts.filter(post => post.category === selectedCategory)
 
   return (
-    <section ref={ref} id="blog" className="py-32 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden min-h-screen">
-      {/* 3D Floating Background Elements */}
+    <section ref={ref} id="blog" className="py-8 sm:py-12 md:py-16 lg:py-20 xl:py-32 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden min-h-screen">
+      {/* 3D Floating Background Elements - Optimized for Mobile */}
       <motion.div 
-        style={{ y: backgroundY }}
+        style={{ y: shouldReduceMotion ? 0 : backgroundY }}
         className="absolute inset-0 overflow-hidden pointer-events-none"
       >
-        <motion.div 
-          animate={{ 
-            rotate: 360,
-            scale: [1, 1.2, 1],
-            x: [0, 100, 0]
-          }}
-          transition={{ 
-            duration: 20, 
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-full blur-3xl" 
-        />
-        <motion.div 
-          animate={{ 
-            rotate: -360,
-            scale: [1, 1.3, 1],
-            y: [0, -50, 0]
-          }}
-          transition={{ 
-            duration: 25, 
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-full blur-3xl" 
-        />
-        <motion.div 
-          animate={{ 
-            rotate: 180,
-            scale: [1, 1.1, 1],
-            x: [0, -80, 0]
-          }}
-          transition={{ 
-            duration: 15, 
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="absolute top-1/2 left-1/2 w-80 h-80 bg-gradient-to-r from-indigo-600/15 to-purple-600/15 rounded-full blur-3xl" 
-        />
+        {/* Reduced particles for mobile performance */}
+        {!isMobile && !shouldReduceMotion && (
+          <>
+            <motion.div 
+              animate={{ 
+                rotate: 360,
+                scale: [1, 1.2, 1],
+                x: [0, 100, 0]
+              }}
+              transition={{ 
+                duration: 20, 
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="absolute top-20 left-20 w-64 h-64 md:w-96 md:h-96 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-full blur-3xl" 
+            />
+            <motion.div 
+              animate={{ 
+                rotate: -360,
+                scale: [1, 1.3, 1],
+                y: [0, -50, 0]
+              }}
+              transition={{ 
+                duration: 25, 
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="absolute bottom-20 right-20 w-64 h-64 md:w-96 md:h-96 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-full blur-3xl" 
+            />
+            <motion.div 
+              animate={{ 
+                rotate: 180,
+                scale: [1, 1.1, 1],
+                x: [0, -80, 0]
+              }}
+              transition={{ 
+                duration: 15, 
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="absolute top-1/2 left-1/2 w-48 h-48 md:w-80 md:h-80 bg-gradient-to-r from-indigo-600/15 to-purple-600/15 rounded-full blur-3xl" 
+            />
+            
+            {/* 3D Floating Particles - Reduced for mobile */}
+            {[...Array(isMobile ? 8 : 20)].map((_, i) => (
+              <motion.div
+                key={i}
+                animate={{
+                  y: [0, -100, 0],
+                  x: [0, Math.random() * 100 - 50, 0],
+                  opacity: [0, 1, 0],
+                  scale: [0, 1, 0]
+                }}
+                transition={{
+                  duration: 3 + Math.random() * 4,
+                  repeat: Infinity,
+                  delay: Math.random() * 2,
+                  ease: "easeInOut"
+                }}
+                className="absolute w-1 h-1 md:w-2 md:h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`
+                }}
+              />
+            ))}
+          </>
+        )}
         
-        {/* 3D Floating Particles */}
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            animate={{
-              y: [0, -100, 0],
-              x: [0, Math.random() * 100 - 50, 0],
-              opacity: [0, 1, 0],
-              scale: [0, 1, 0]
-            }}
-            transition={{
-              duration: 3 + Math.random() * 4,
-              repeat: Infinity,
-              delay: Math.random() * 2,
-              ease: "easeInOut"
-            }}
-            className="absolute w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`
-            }}
-          />
-        ))}
+        {/* Simple static background for mobile/reduced motion */}
+        {(isMobile || shouldReduceMotion) && (
+          <>
+            <div className="absolute top-20 left-20 w-48 h-48 bg-gradient-to-r from-purple-600/10 to-pink-600/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-20 right-20 w-48 h-48 bg-gradient-to-r from-blue-600/10 to-cyan-600/10 rounded-full blur-3xl" />
+            <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-gradient-to-r from-indigo-600/8 to-purple-600/8 rounded-full blur-3xl" />
+          </>
+        )}
       </motion.div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-20">
-        {/* 3D Animated Header */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-20">
+        {/* 3D Animated Header - Responsive */}
         <motion.div
           initial={{ opacity: 0, y: 50, scale: 0.8 }}
           animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-          transition={{ duration: 1, type: "spring" }}
-          className="text-center mb-20"
+          transition={{ duration: shouldReduceMotion ? 0 : 1, type: "spring" }}
+          className="text-center mb-8 sm:mb-12 md:mb-16 lg:mb-20"
         >
           <motion.h2 
-            animate={{ 
+            animate={!shouldReduceMotion ? { 
               textShadow: [
                 "0 0 20px rgba(147, 51, 234, 0.5)",
                 "0 0 40px rgba(147, 51, 234, 0.8)",
                 "0 0 20px rgba(147, 51, 234, 0.5)"
               ]
-            }}
+            } : {}}
             transition={{ duration: 2, repeat: Infinity }}
-            className="text-5xl md:text-7xl font-bold text-white mb-8"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 sm:mb-6 md:mb-8"
           >
             <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
               Blog & Articles
             </span>
           </motion.h2>
           <motion.p 
-            animate={{ 
+            animate={!shouldReduceMotion ? { 
               y: [0, -5, 0],
               opacity: [0.8, 1, 0.8]
-            }}
+            } : {}}
             transition={{ duration: 3, repeat: Infinity }}
-            className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed"
+            className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed px-3 sm:px-4"
           >
             Insights, tutorials, and thoughts on modern software development, 
             mobile app creation, and technology trends. All articles are also available on LinkedIn.
           </motion.p>
         </motion.div>
 
-        {/* 3D Category Filter Buttons */}
+        {/* 3D Category Filter Buttons - Responsive */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-4 mb-12"
+          className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 mb-6 sm:mb-8 md:mb-12 px-3 sm:px-4"
         >
           {categories.map((category, index) => (
             <motion.button
               key={category}
-              initial={{ opacity: 0, scale: 0, rotateY: 180 }}
+              initial={{ opacity: 0, scale: 0, rotateY: shouldReduceMotion ? 0 : 180 }}
               animate={{ opacity: 1, scale: 1, rotateY: 0 }}
               transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
               whileHover={{ 
-                scale: 1.1, 
-                rotateY: 10,
-                boxShadow: "0 10px 30px rgba(147, 51, 234, 0.3)"
+                scale: shouldReduceMotion ? 1.05 : 1.1, 
+                rotateY: shouldReduceMotion ? 0 : 10,
+                boxShadow: shouldReduceMotion ? "0 4px 12px rgba(147, 51, 234, 0.2)" : "0 10px 30px rgba(147, 51, 234, 0.3)"
               }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSelectedCategory(category)}
-              className={`px-6 py-3 rounded-full font-medium transition-all duration-300 flex items-center gap-2 ${
+              className={`px-2 py-1 sm:px-3 sm:py-2 md:px-4 md:py-2 lg:px-6 lg:py-3 rounded-full font-medium transition-all duration-300 flex items-center gap-1 sm:gap-2 text-xs sm:text-sm md:text-base ${
                 selectedCategory === category
                   ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
                   : "bg-white/10 text-gray-300 hover:bg-white/20 border border-white/20"
               }`}
             >
-              {categoryIcons[category]}
-              {category}
+              <span className="text-xs sm:text-sm md:text-base lg:text-xl">{categoryIcons[category]}</span>
+              <span className="max-sm:hidden">{category.split(' ')[0]}</span>
+              <span className="sm:hidden md:inline">{category.length > 12 ? category.split(' ')[0] : category}</span>
+              <span className="md:hidden lg:inline">{category}</span>
             </motion.button>
           ))}
         </motion.div>
 
-        {/* 3D Article Cards Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* 3D Article Cards Grid - Responsive */}
+        <div className="grid grid-cols-1 max-sm:grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8 px-3 sm:px-4">
           {filteredPosts.map((post, index) => (
             <motion.article
               key={post.id}
-              initial={{ opacity: 0, y: 100, scale: 0.8, rotateY: 90 }}
+              initial={{ opacity: 0, y: 100, scale: 0.8, rotateY: shouldReduceMotion ? 0 : 90 }}
               animate={isInView ? { opacity: 1, y: 0, scale: 1, rotateY: 0 } : {}}
               transition={{ 
-                duration: 0.8, 
+                duration: shouldReduceMotion ? 0 : 0.8, 
                 delay: 0.3 + index * 0.1,
                 type: "spring",
                 stiffness: 100
               }}
               whileHover={{ 
-                y: -15, 
-                scale: 1.05,
-                rotateX: 5,
-                boxShadow: "0 20px 40px rgba(147, 51, 234, 0.4)",
+                y: shouldReduceMotion ? -5 : -15, 
+                scale: shouldReduceMotion ? 1.02 : 1.05,
+                rotateX: shouldReduceMotion ? 0 : 5,
+                boxShadow: shouldReduceMotion ? "0 10px 20px rgba(147, 51, 234, 0.2)" : "0 20px 40px rgba(147, 51, 234, 0.4)",
                 transition: { duration: 0.3 }
               }}
               whileTap={{ scale: 0.98 }}
               className="bg-gradient-to-br from-slate-700/90 via-slate-800/90 to-slate-900/90 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden group relative preserve-3d"
               style={{ 
-                perspective: "1000px",
-                transformStyle: "preserve-3d"
+                perspective: shouldReduceMotion ? "none" : "1000px",
+                transformStyle: shouldReduceMotion ? "flat" : "preserve-3d"
               }}
             >
-              {/* 3D Card Header with LinkedIn Icon */}
+              {/* 3D Card Header with LinkedIn Icon - Responsive */}
               <motion.div 
-                className="relative h-48 overflow-hidden"
+                className="relative h-28 max-sm:h-32 sm:h-40 md:h-48 overflow-hidden"
                 whileHover={{ 
-                  scale: 1.05,
+                  scale: shouldReduceMotion ? 1.02 : 1.05,
                   transition: { duration: 0.3 }
                 }}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600/30 via-purple-600/20 to-pink-600/30" />
-                <motion.div 
-                  animate={{ 
-                    rotate: 360,
-                    scale: [1, 1.1, 1]
-                  }}
-                  transition={{ 
-                    duration: 4 + index,
-                    repeat: Infinity,
-                    ease: "linear"
-                  }}
-                  className="absolute inset-0 flex items-center justify-center"
-                >
-                  <motion.div
-                    animate={{
-                      rotateY: [0, 360],
-                      scale: [1, 1.2, 1]
+                {!shouldReduceMotion && (
+                  <motion.div 
+                    animate={{ 
+                      rotate: 360,
+                      scale: [1, 1.1, 1]
                     }}
-                    transition={{
-                      duration: 3,
+                    transition={{ 
+                      duration: 4 + index,
                       repeat: Infinity,
-                      ease: "easeInOut"
+                      ease: "linear"
                     }}
-                    className="w-20 h-20 bg-gradient-to-r from-purple-500 via-blue-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg"
+                    className="absolute inset-0 flex items-center justify-center"
                   >
-                    <FaLinkedin className="text-white text-3xl" />
+                    <motion.div
+                      animate={{
+                        rotateY: [0, 360],
+                        scale: [1, 1.2, 1]
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                      className="w-10 h-10 max-sm:w-12 max-sm:h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-r from-purple-500 via-blue-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg"
+                    >
+                      <FaLinkedin className="text-white text-base max-sm:text-lg sm:text-2xl md:text-3xl" />
+                    </motion.div>
                   </motion.div>
-                </motion.div>
+                )}
                 
-                {/* Floating Category Badge */}
+                {/* Static icon for reduced motion */}
+                {shouldReduceMotion && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-10 h-10 max-sm:w-12 max-sm:h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-r from-purple-500 via-blue-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg">
+                      <FaLinkedin className="text-white text-base max-sm:text-lg sm:text-2xl md:text-3xl" />
+                    </div>
+                  </div>
+                )}
+                
+                {/* Floating Category Badge - Responsive */}
                 <motion.div
-                  animate={{
+                  animate={!shouldReduceMotion ? {
                     y: [0, -3, 0],
                     rotate: [-2, 2, -2]
-                  }}
+                  } : {}}
                   transition={{
                     duration: 2,
                     repeat: Infinity,
                     ease: "easeInOut"
                   }}
-                  className="absolute top-4 left-4"
+                  className="absolute top-1 max-sm:top-2 sm:top-3 md:top-4 left-1 max-sm:left-2 sm:left-3 md:left-4"
                 >
-                  <span className="px-3 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 text-sm rounded-full border border-blue-500/30 backdrop-blur-sm">
+                  <span className="px-1 py-0.5 max-sm:px-2 max-sm:py-1 sm:px-3 sm:py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 text-xs max-sm:text-xs sm:text-sm rounded-full border border-blue-500/30 backdrop-blur-sm">
                     {post.category}
                   </span>
                 </motion.div>
 
-                {/* 3D Floating View Count */}
+                {/* 3D Floating View Count - Responsive */}
                 <motion.div
-                  animate={{
+                  animate={!shouldReduceMotion ? {
                     y: [0, -5, 0],
                     opacity: [0.7, 1, 0.7]
-                  }}
+                  } : {}}
                   transition={{
                     duration: 2.5,
                     repeat: Infinity,
                     delay: index * 0.2
                   }}
-                  className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-full px-2 py-1 text-xs text-white flex items-center gap-1"
+                  className="absolute top-1 max-sm:top-2 sm:top-3 md:top-4 right-1 max-sm:right-2 sm:right-3 md:right-4 bg-black/50 backdrop-blur-sm rounded-full px-1 py-0.5 max-sm:px-2 max-sm:py-1 text-xs text-white flex items-center gap-1"
                 >
                   <FaEye className="text-xs" />
                   {post.views}
                 </motion.div>
               </motion.div>
 
-              {/* 3D Article Content */}
+              {/* 3D Article Content - Responsive */}
               <motion.div 
-                className="p-6"
+                className="p-3 max-sm:p-4 sm:p-6"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 + index * 0.1 }}
               >
                 <motion.div 
-                  className="flex items-center gap-4 text-gray-400 text-sm mb-4"
+                  className="flex flex-wrap items-center gap-1 max-sm:gap-2 sm:gap-4 text-gray-400 text-xs max-sm:text-xs sm:text-sm mb-2 max-sm:mb-3 sm:mb-4"
                   whileHover={{ 
-                    scale: 1.05,
+                    scale: 1.02,
                     color: "#60a5fa"
                   }}
                 >
                   <motion.span 
-                    animate={{ 
+                    animate={!shouldReduceMotion ? { 
                       rotate: [0, 5, -5, 0]
-                    }}
+                    } : {}}
                     transition={{
                       duration: 4,
                       repeat: Infinity,
                       ease: "easeInOut"
                     }}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-0.5 max-sm:gap-1 sm:gap-2"
                   >
-                    <FaCalendar />
-                    {post.date}
+                    <FaCalendar className="text-xs max-sm:text-xs sm:text-sm" />
+                    <span className="text-xs max-sm:text-xs sm:text-sm">{post.date}</span>
                   </motion.span>
                   <motion.span 
-                    animate={{ 
+                    animate={!shouldReduceMotion ? { 
                       rotate: [0, -5, 5, 0]
-                    }}
+                    } : {}}
                     transition={{
                       duration: 3.5,
                       repeat: Infinity,
                       ease: "easeInOut"
                     }}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-0.5 max-sm:gap-1 sm:gap-2"
                   >
-                    <FaClock />
-                    {post.readTime}
+                    <FaClock className="text-xs max-sm:text-xs sm:text-sm" />
+                    <span className="text-xs max-sm:text-xs sm:text-sm">{post.readTime}</span>
                   </motion.span>
                 </motion.div>
 
                 <motion.h3 
-                  className="text-xl font-bold text-white mb-3 line-clamp-2 group-hover:text-purple-400 transition-colors"
+                  className="text-base max-sm:text-lg sm:text-xl font-bold text-white mb-1 max-sm:mb-2 sm:mb-3 line-clamp-2 group-hover:text-purple-400 transition-colors"
                   whileHover={{ 
-                    scale: 1.02,
-                    textShadow: "0 0 20px rgba(147, 51, 234, 0.5)"
+                    scale: 1.01,
+                    textShadow: shouldReduceMotion ? "none" : "0 0 20px rgba(147, 51, 234, 0.5)"
                   }}
                 >
                   {post.title}
                 </motion.h3>
 
                 <motion.p 
-                  className="text-gray-300 mb-6 line-clamp-3 leading-relaxed"
+                  className="text-gray-300 mb-3 max-sm:mb-4 sm:mb-6 line-clamp-3 leading-relaxed text-xs max-sm:text-sm sm:text-base"
                   whileHover={{ 
                     scale: 1.01,
                     color: "#e2e8f0"
@@ -575,127 +618,134 @@ export default function Blog() {
                   {post.description}
                 </motion.p>
 
-                {/* 3D LinkedIn Button */}
+                {/* 3D LinkedIn Button - Responsive */}
                 <motion.a
                   href={post.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  initial={{ scale: 0.8, rotateX: -90 }}
+                  initial={{ scale: 0.8, rotateX: shouldReduceMotion ? 0 : -90 }}
                   animate={{ scale: 1, rotateX: 0 }}
                   transition={{ delay: 0.8 + index * 0.1 }}
                   whileHover={{ 
-                    scale: 1.1,
-                    rotateY: 10,
-                    boxShadow: "0 15px 30px rgba(147, 51, 234, 0.5)",
-                    background: "linear-gradient(135deg, #8b5cf6, #3b82f6)"
+                    scale: shouldReduceMotion ? 1.05 : 1.1,
+                    rotateY: shouldReduceMotion ? 0 : 10,
+                    boxShadow: shouldReduceMotion ? "0 8px 16px rgba(147, 51, 234, 0.3)" : "0 15px 30px rgba(147, 51, 234, 0.5)",
+                    background: shouldReduceMotion ? "linear-gradient(135deg, #8b5cf6, #3b82f6)" : "linear-gradient(135deg, #8b5cf6, #3b82f6)"
                   }}
                   whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full font-medium hover:shadow-lg transition-all duration-300 group relative overflow-hidden"
-                  style={{ transformStyle: "preserve-3d" }}
+                  className="inline-flex items-center gap-1 max-sm:gap-2 px-2 py-1 max-sm:px-4 max-sm:py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full font-medium hover:shadow-lg transition-all duration-300 group relative overflow-hidden text-xs max-sm:text-sm sm:text-base"
+                  style={{ transformStyle: shouldReduceMotion ? "flat" : "preserve-3d" }}
                 >
                   <motion.div
-                    animate={{
+                    animate={!shouldReduceMotion ? {
                       x: [0, 5, 0]
-                    }}
+                    } : {}}
                     transition={{
                       duration: 2,
                       repeat: Infinity,
                       ease: "easeInOut"
                     }}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-1 max-sm:gap-2"
                   >
-                    <FaLinkedin className="text-lg" />
-                    Read on LinkedIn
-                    <FaArrowRight className="text-sm group-hover:translate-x-1 transition-transform" />
+                    <FaLinkedin className="text-xs max-sm:text-sm sm:text-lg" />
+                    <span className="hidden max-sm:inline">LinkedIn</span>
+                    <span className="max-sm:hidden sm:inline">Read on LinkedIn</span>
+                    <FaArrowRight className="text-xs max-sm:text-xs sm:text-sm group-hover:translate-x-1 transition-transform" />
                   </motion.div>
                   
-                  {/* Button Shine Effect */}
-                  <motion.div
-                    animate={{
-                      x: [-100, 100]
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: "linear"
-                    }}
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                  />
+                  {/* Button Shine Effect - Disabled for reduced motion */}
+                  {!shouldReduceMotion && (
+                    <motion.div
+                      animate={{
+                        x: [-100, 100]
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "linear"
+                      }}
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                    />
+                  )}
                 </motion.a>
               </motion.div>
             </motion.article>
           ))}
         </div>
 
-        {/* 3D LinkedIn Profile Section */}
+        {/* 3D LinkedIn Profile Section - Responsive */}
         <motion.div
           initial={{ opacity: 0, y: 30, scale: 0.8 }}
           animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
           transition={{ duration: 0.8, delay: 1, type: "spring" }}
-          className="text-center mt-16"
+          className="text-center mt-6 max-sm:mt-8 md:mt-16 px-3 max-sm:px-4"
         >
           <motion.div 
-            animate={{
+            animate={!shouldReduceMotion ? {
               rotate: [0, 2, -2, 0],
               scale: [1, 1.02, 1]
-            }}
+            } : {}}
             transition={{
               duration: 4,
               repeat: Infinity,
               ease: "easeInOut"
             }}
-            className="bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 backdrop-blur-sm rounded-3xl p-8 border border-white/10 relative overflow-hidden"
+            className="bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 backdrop-blur-sm rounded-xl max-sm:rounded-2xl md:rounded-3xl p-4 max-sm:p-6 md:p-8 border border-white/10 relative overflow-hidden"
           >
-            {/* Floating Background Elements */}
-            <motion.div
-              animate={{
-                rotate: 360,
-                scale: [1, 1.5, 1]
-              }}
-              transition={{
-                duration: 10,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-              className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-full blur-lg"
-            />
-            <motion.div
-              animate={{
-                rotate: -360,
-                scale: [1, 1.3, 1]
-              }}
-              transition={{
-                duration: 8,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-              className="absolute -bottom-4 -left-4 w-12 h-12 bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-full blur-lg"
-            />
+            {/* Floating Background Elements - Responsive */}
+            {!shouldReduceMotion && (
+              <>
+                <motion.div
+                  animate={{
+                    rotate: 360,
+                    scale: [1, 1.5, 1]
+                  }}
+                  transition={{
+                    duration: 10,
+                    repeat: Infinity,
+                    ease: "linear"
+                  }}
+                  className="absolute -top-2 -right-2 md:-top-4 md:-right-4 w-8 h-8 md:w-16 md:h-16 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-full blur-lg"
+                />
+                <motion.div
+                  animate={{
+                    rotate: -360,
+                    scale: [1, 1.3, 1]
+                  }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "linear"
+                  }}
+                  className="absolute -bottom-2 -left-2 md:-bottom-4 md:-left-4 w-6 h-6 md:w-12 md:h-12 bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-full blur-lg"
+                />
+              </>
+            )}
             
             <motion.h3 
-              animate={{
+              animate={!shouldReduceMotion ? {
                 textShadow: [
                   "0 0 10px rgba(59, 130, 246, 0.5)",
                   "0 0 20px rgba(59, 130, 246, 0.8)",
                   "0 0 10px rgba(59, 130, 246, 0.5)"
                 ]
-              }}
+              } : {}}
               transition={{ duration: 3, repeat: Infinity }}
-              className="text-2xl font-bold text-white mb-4 relative z-10"
+              className="text-lg max-sm:text-xl md:text-2xl font-bold text-white mb-2 max-sm:mb-3 md:mb-4 relative z-10"
             >
               Follow me on LinkedIn
             </motion.h3>
             <motion.p 
-              animate={{
+              animate={!shouldReduceMotion ? {
                 y: [0, -3, 0],
                 opacity: [0.9, 1, 0.9]
-              }}
+              } : {}}
               transition={{
                 duration: 2.5,
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
-              className="text-gray-300 mb-6 max-w-2xl mx-auto relative z-10"
+              className="text-gray-300 mb-3 max-sm:mb-4 md:mb-6 max-w-2xl mx-auto relative z-10 text-xs max-sm:text-sm md:text-base leading-relaxed px-2 max-sm:px-0"
             >
               Connect with me on LinkedIn for more articles, tech insights, and professional updates. 
               I regularly share content about Java development, mobile app creation, and software engineering.
@@ -704,47 +754,50 @@ export default function Blog() {
               href="https://linkedin.com/in/vikas-kumar-jain-571a48230"
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ scale: 0.8, rotateY: -180 }}
+              initial={{ scale: 0.8, rotateY: shouldReduceMotion ? 0 : -180 }}
               animate={{ scale: 1, rotateY: 0 }}
               transition={{ delay: 1.2, type: "spring" }}
               whileHover={{ 
-                scale: 1.1,
-                rotateY: 15,
-                boxShadow: "0 20px 40px rgba(59, 130, 246, 0.4)",
+                scale: shouldReduceMotion ? 1.05 : 1.1,
+                rotateY: shouldReduceMotion ? 0 : 15,
+                boxShadow: shouldReduceMotion ? "0 8px 16px rgba(59, 130, 246, 0.3)" : "0 20px 40px rgba(59, 130, 246, 0.4)",
                 background: "linear-gradient(135deg, #3b82f6, #1d4ed8)"
               }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full font-semibold hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
-              style={{ transformStyle: "preserve-3d" }}
+              className="inline-flex items-center gap-1 max-sm:gap-2 px-3 max-sm:px-4 py-2 max-sm:py-3 md:px-8 md:py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full font-semibold hover:shadow-xl transition-all duration-300 relative overflow-hidden group text-xs max-sm:text-sm md:text-base"
+              style={{ transformStyle: shouldReduceMotion ? "flat" : "preserve-3d" }}
             >
               <motion.div
-                animate={{
+                animate={!shouldReduceMotion ? {
                   rotate: 360
-                }}
+                } : {}}
                 transition={{
                   duration: 3,
                   repeat: Infinity,
                   ease: "linear"
                 }}
-                className="flex items-center gap-3"
+                className="flex items-center gap-1 max-sm:gap-2"
               >
-                <FaLinkedin className="text-xl" />
-                Visit LinkedIn Profile
-                <FaExternalLinkAlt className="text-sm" />
+                <FaLinkedin className="text-sm max-sm:text-lg md:text-xl" />
+                <span className="hidden max-sm:inline">LinkedIn</span>
+                <span className="max-sm:hidden sm:inline">Visit LinkedIn Profile</span>
+                <FaExternalLinkAlt className="text-xs max-sm:text-xs md:text-sm" />
               </motion.div>
               
-              {/* Button Shine Effect */}
-              <motion.div
-                animate={{
-                  x: [-100, 100]
-                }}
-                transition={{
-                  duration: 2.5,
-                  repeat: Infinity,
-                  ease: "linear"
-                }}
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-              />
+              {/* Button Shine Effect - Disabled for reduced motion */}
+              {!shouldReduceMotion && (
+                <motion.div
+                  animate={{
+                    x: [-100, 100]
+                  }}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                    ease: "linear"
+                  }}
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                />
+              )}
             </motion.a>
           </motion.div>
         </motion.div>
