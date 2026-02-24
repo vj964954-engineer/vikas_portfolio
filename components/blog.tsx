@@ -435,10 +435,20 @@ export default function Blog() {
                   : "bg-white/10 text-gray-300 hover:bg-white/20 border border-white/20"
               }`}
             >
-              <span className="text-xs sm:text-sm md:text-base lg:text-xl">{categoryIcons[category]}</span>
-              <span className="max-sm:hidden">{category.split(' ')[0]}</span>
-              <span className="sm:hidden md:inline">{category.length > 12 ? category.split(' ')[0] : category}</span>
-              <span className="md:hidden lg:inline">{category}</span>
+              {/* <span className="text-xs sm:text-sm md:text-base lg:text-xl">{categoryIcons[category]}</span> */}
+              <span className="text-xl">{categoryIcons[category]}</span>
+              {/* <span className="max-sm:hidden">{category.split(' ')[0]}</span> */}
+              <span className="md:hidden">
+    {category.split(' ')[0]}
+  </span>
+              {/* <span className="sm:hidden md:inline">{category.length > 12 ? category.split(' ')[0] : category}</span> */}
+              <span className="hidden md:inline lg:hidden">
+    {category.length > 12 ? category.split(' ')[0] : category}
+  </span>
+              {/* <span className="md:hidden lg:inline">{category}</span> */}
+              <span className="hidden lg:inline">
+    {category}
+  </span>
             </motion.button>
           ))}
         </motion.div>

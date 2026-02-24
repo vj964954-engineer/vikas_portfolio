@@ -627,8 +627,8 @@ export default function Hero() {
           {/* Interactive Stats - Responsive layout */}
           <motion.div initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1, delay: 1.1 }} className="flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 lg:gap-8 mb-6 sm:mb-8 md:mb-12 px-2 sm:px-4">
             {[
-              { number: "50+", label: "Mobile Apps Created", icon: FaMobile, color: "from-blue-500 to-cyan-500" },
-              { number: "5+", label: "Years Experience", icon: FaRocket, color: "from-purple-500 to-pink-500" },
+              { number: "32+", label: "Mobile Apps Created", icon: FaMobile, color: "from-blue-500 to-cyan-500" },
+              { number: "2+", label: "Years Experience", icon: FaRocket, color: "from-purple-500 to-pink-500" },
               { number: "3", label: "Platforms Mastered", icon: FaStar, color: "from-green-500 to-emerald-500" },
               { number: "100%", label: "App Store Success", icon: FaHeart, color: "from-red-500 to-rose-500" }
             ].map((stat, index) => (
