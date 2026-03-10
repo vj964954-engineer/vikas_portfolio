@@ -8,7 +8,8 @@ const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Vikas Kumar Jain | App Developer",
   description: "App Developer specializing in Java, Spring Boot, Swift UI , kotlin and modern app technologies",
-    generator: 'v0.app'
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
+  generator: 'v0.app'
 }
 
 export default function RootLayout({

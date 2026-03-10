@@ -64,34 +64,34 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 w-full z-40 transition-all duration-300 ${
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-surface/80 backdrop-blur-md border-b border-surface-light shadow-lg shadow-primary/5"
+          ? "bg-slate-900/95 backdrop-blur-md border-b border-white/10 shadow-lg shadow-blue-500/10"
           : "bg-transparent"
       }`}
     >
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
         {/* Logo */}
         <Link
           href="#"
-          className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent hover:scale-110 transition-transform duration-300"
+          className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent hover:scale-110 transition-transform duration-300 drop-shadow-md"
         >
           VJ
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-6 xl:gap-8">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className={`relative text-sm font-medium transition-colors duration-300 group ${
-                activeLink === link.href ? "text-primary" : "text-text-muted hover:text-primary"
+              className={`relative text-sm font-medium transition-colors duration-300 group py-2 ${
+                activeLink === link.href ? "text-blue-400" : "text-gray-300 hover:text-blue-400"
               }`}
             >
               {link.label}
               <span
-                className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-primary to-accent transition-all duration-300 ${
+                className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-blue-400 to-cyan-400 transition-all duration-300 ${
                   activeLink === link.href ? "w-full" : "w-0 group-hover:w-full"
                 }`}
               />
@@ -102,7 +102,8 @@ export default function Header() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden text-text-muted hover:text-primary transition-colors p-2 rounded-lg hover:bg-surface-light/10"
+          className="lg:hidden text-gray-300 hover:text-blue-400 transition-colors p-2 sm:p-3 rounded-lg hover:bg-white/10 touch-manipulation"
+          aria-label="Toggle menu"
         >
           {isOpen ? (
             <div className="w-6 h-6 flex flex-col justify-center items-center">
@@ -127,14 +128,18 @@ export default function Header() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-surface/95 backdrop-blur-md border-b border-surface-light overflow-hidden"
+            className="lg:hidden bg-slate-900/95 backdrop-blur-md border-b border-white/10 overflow-hidden"
           >
-            <div className="px-4 py-6 space-y-2">
+            <div className="px-4 sm:px-6 py-6 space-y-1">
               {navLinks.map((link, index) => (
                 <motion.a
                   key={link.href}
                   href={link.href}
-                  className="block text-text-muted hover:text-primary transition-colors py-3 px-4 rounded-lg hover:bg-surface-light/10 border-l-2 border-transparent hover:border-primary"
+                  className={`block py-3 sm:py-4 px-4 sm:px-6 rounded-lg hover:bg-white/10 border-l-4 transition-all duration-300 text-base sm:text-lg font-medium ${
+                    activeLink === link.href 
+                      ? 'text-blue-400 bg-white/5 border-blue-400' 
+                      : 'text-gray-300 border-transparent hover:text-blue-400 hover:border-blue-400/50'
+                  }`}
                   onClick={() => setIsOpen(false)}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}

@@ -98,15 +98,15 @@ export default function About() {
         
         {/* Floating Icons */}
         <motion.div
-          animate={{ y: [0, -30, 0], rotate: [0, 180, 360] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+          animate={{ y: [0, -15, 0], rotate: [0, 180, 360] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
           className="absolute top-32 right-32 text-blue-400/20 text-6xl"
         >
           <FaUser />
         </motion.div>
         <motion.div
-          animate={{ y: [0, 30, 0], rotate: [360, 180, 0] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          animate={{ y: [0, 15, 0], rotate: [360, 180, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
           className="absolute bottom-32 left-32 text-purple-400/20 text-5xl"
         >
           <FaCode />
@@ -118,7 +118,7 @@ export default function About() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, delay: 1.2 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
           className="text-center mt-8 md:mt-12 lg:mt-16"
         >
           <div className="bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 backdrop-blur-sm rounded-xl md:rounded-2xl lg:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-12 border border-white/10">

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { FaCode, FaDesktop, FaMobile, FaExternalLinkAlt, FaStar, FaRocket, FaEye, FaChevronDown } from 'react-icons/fa'
+import { FaCode, FaDesktop, FaMobile, FaExternalLinkAlt, FaStar, FaRocket, FaEye, FaChevronDown, FaLayerGroup, FaCube } from 'react-icons/fa'
 
 interface Project {
   id: number;
@@ -206,7 +206,7 @@ const projects: Project[] = [
     id: 15,
     title: "My Guru: GPT4 AI ChatBot - Android",
     description: "Introducing My Guru: GPT4 AI ChatBot ultimate personal assistant and AI chatbot. With My Guru, you can get instant help and answers to any question, anytime, anywhere. Simply type or speak your request and receive a quick and accurate response from our advanced artificial intelligence. My Guru is your go-to source for reliable information on a wide range of topics, from general knowledge to latest news and trends.",
-    image: "https://play-lh.googleusercontent.com/qpECH5G1RFUyRIK5xj7HGZZEWnmB3RJQQBvkScF46ujkqlISRTkwp7PXcxZ53s3RAw0=s48-rw",
+    image: "https://play-lh.googleusercontent.com/qpECH5G1RFUyRIK5xj7HGZZEWnmB3RJQQBvkScF46ujkqlISRTkwp7PXcxZ53s3RAw0=w240-h480-rw",
     technologies: ["Android", "Java", "GPT-4 API", "Voice Recognition", "Natural Language Processing", "Firebase"],
     category: "android",
     
@@ -219,7 +219,7 @@ const projects: Project[] = [
     id: 16,
     title: "My Guru: GPT4 AI ChatBot - iOS",
     description: "Introducing My Guru: GPT4 AI ChatBot ultimate personal assistant and AI chatbot. With My Guru, you can get instant help and answers to any question, anytime, anywhere. Simply type or speak your request and receive a quick and accurate response from our advanced artificial intelligence. My Guru is your go-to source for reliable information on a wide range of topics, from general knowledge to latest news and trends.",
-    image: "https://play-lh.googleusercontent.com/qpECH5G1RFUyRIK5xj7HGZZEWnmB3RJQQBvkScF46ujkqlISRTkwp7PXcxZ53s3RAw0=s48-rw",
+    image: "https://play-lh.googleusercontent.com/qpECH5G1RFUyRIK5xj7HGZZEWnmB3RJQQBvkScF46ujkqlISRTkwp7PXcxZ53s3RAw0=w240-h480-rw",
     technologies: ["iOS", "Swift", "SwiftUI", "GPT-4 API", "Speech Recognition", "Core Data"],
     category: "ios",
     
@@ -283,14 +283,162 @@ const projects: Project[] = [
    
 ]
 
+// Smooth 3D Background Component
+function Smooth3DBackground() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Floating gradient orbs */}
+      <div className="absolute top-20 left-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute top-40 right-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+      <div className="absolute bottom-32 left-1/3 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-500" />
+      
+      {/* Subtle grid pattern */}
+      <div 
+        className="absolute inset-0 opacity-5"
+        style={{
+          backgroundImage: `linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px)`,
+          backgroundSize: '50px 50px'
+        }}
+      />
+    </div>
+  )}
+
+function ImageDebugger() {
+  const [imageStatus, setImageStatus] = useState<Record<string, boolean>>({})
+  
+  useEffect(() => {
+    const testImages = async () => {
+      const results: Record<string, boolean> = {}
+      
+      for (const project of projects) {
+        try {
+          const img = new Image()
+          await new Promise((resolve, reject) => {
+            img.onload = () => resolve(true)
+            img.onerror = () => reject(false)
+            img.src = project.image
+          })
+          results[project.title] = true
+          console.log(`✅ SUCCESS: ${project.title}`)
+        } catch (error) {
+          results[project.title] = false
+          console.log(`❌ FAILED: ${project.title} - ${project.image}`)
+        }
+      }
+      
+      setImageStatus(results)
+      console.log('📊 Image Test Results:', results)
+    }
+    
+    testImages()
+  }, [])
+  
+  return null // This component doesn't render anything, just logs results
+}
+function RobustImage({ project, className }: { project: Project, className: string }) {
+  const [imageSrc, setImageSrc] = useState(project.image)
+  const [hasError, setHasError] = useState(false)
+  const [fallbackCount, setFallbackCount] = useState(0)
+
+  const handleImageError = () => {
+    if (fallbackCount === 0) {
+      // First fallback: Use a high-quality tech placeholder based on category
+      const techPlaceholder = project.category === 'android' 
+        ? `https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop` // Mobile
+        : `https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=300&fit=crop`; // App UI
+      setImageSrc(techPlaceholder)
+      setFallbackCount(1)
+    } else {
+      // Final fallback: Show the CSS-based "App Icon" style
+      setHasError(true)
+    }
+  }
+
+  if (hasError) {
+    return (
+      <div className={`${className} flex items-center justify-center bg-gradient-to-br from-slate-700 to-slate-900 border border-white/10`}>
+        <div className="text-center p-4">
+          <div className="text-3xl mb-1 opacity-50">
+            {project.category === 'ios' ? <FaMobile /> : <FaCode />}
+          </div>
+          <div className="text-[10px] font-bold uppercase tracking-tighter opacity-40">
+            {project.title.split(':')[0]}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <img
+      src={imageSrc}
+      alt={project.title}
+      onError={handleImageError}
+      className={className}
+      loading="lazy"
+    />
+  )
+}
+// function RobustImage({ project, className }: { project: Project, className: string }) {
+//   const [imageSrc, setImageSrc] = useState(project.image)
+//   const [isLoading, setIsLoading] = useState(true)
+//   const [hasError, setHasError] = useState(false)
+
+//   const fallbackImages = [
+//     project.image, // Original image
+//     '/placeholder.jpg', // Local placeholder
+//     'https://picsum.photos/seed/' + project.id + '/400/300.jpg', // Random placeholder
+//     'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect width="400" height="300" fill="%23475569"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-size="20"%3E' + project.title + '%3C/text%3E%3C/svg%3E' // SVG fallback
+//   ]
+
+//   const handleImageError = () => {
+//     const currentIndex = fallbackImages.indexOf(imageSrc)
+//     if (currentIndex < fallbackImages.length - 1) {
+//       console.log(`🔄 Trying fallback for ${project.title}: ${fallbackImages[currentIndex + 1]}`)
+//       setImageSrc(fallbackImages[currentIndex + 1])
+//     } else {
+//       setHasError(true)
+//       console.log(`❌ All fallbacks failed for ${project.title}`)
+//     }
+//   }
+
+//   return (
+//     <div className="relative w-full h-full">
+//       {isLoading && (
+//         <div className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-800 animate-pulse" />
+//       )}
+//       <img
+//         src={imageSrc}
+//         alt={project.title}
+//         onLoad={() => {
+//           setIsLoading(false)
+//           setHasError(false)
+//           console.log(`✅ Loaded: ${project.title} - ${imageSrc}`)
+//         }}
+//         onError={handleImageError}
+//         className={className}
+//         style={{ display: hasError ? 'none' : 'block' }}
+//       />
+//       {hasError && (
+//         <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+//           <div className="text-center text-white p-4">
+//             <div className="text-2xl mb-2">📱</div>
+//             <div className="text-sm font-bold">{project.title}</div>
+//             <div className="text-xs opacity-75">Image Not Available</div>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   )
+// }
+
 export default function Projects() {
- const [selectedCategory, setSelectedCategory] = useState<string>('all')
-  const [hoveredProject, setHoveredProject] = useState<number | null>(null)
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(['android']))
-  const [viewMode, setViewMode] = useState<'accordion' | '3d-showcase'>('3d-showcase')
-  const [isAutoRotating, setIsAutoRotating] = useState(true)
-  const [isInteractiveMode, setIsInteractiveMode] = useState(false)
-const { ref, inView } = useInView({ 
+  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [viewMode, setViewMode] = useState<'grid' | '3d-carousel' | 'showcase'>('showcase')
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+  
+  const { ref, inView } = useInView({ 
     threshold: 0.1,
     triggerOnce: true 
   })
@@ -338,69 +486,22 @@ const { ref, inView } = useInView({
       liveUrl: "https://play.google.com/store/apps/details?id=com.pulsetalk&pcampaignid=web_share"
     }
   ]
-
-  // Auto rotation effect
-  useEffect(() => {
-    if (isAutoRotating && viewMode === '3d-showcase') {
-      const interval = setInterval(() => {
-        // Simply cycle through hover states to trigger animations
-        const randomIndex = Math.floor(Math.random() * showcaseProjects.length)
-        setHoveredProject(showcaseProjects[randomIndex].id)
-      }, 2000)
-      return () => clearInterval(interval)
-    }
-  }, [isAutoRotating, viewMode])
-
-  // Interactive mode effect
-  useEffect(() => {
-    if (isInteractiveMode && viewMode === '3d-showcase') {
-      const handleMouseMove = (e: MouseEvent) => {
-        const cards = document.querySelectorAll('.showcase-card')
-        cards.forEach((card: any) => {
-          const rect = card.getBoundingClientRect()
-          const centerX = rect.left + rect.width / 2
-          const centerY = rect.top + rect.height / 2
-          const angleX = (e.clientY - centerY) / 15
-          const angleY = (e.clientX - centerX) / 15
-          card.style.transform = `rotateX(${-angleX}deg) rotateY(${angleY}deg)`
-        })
-      }
-      document.addEventListener('mousemove', handleMouseMove)
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove)
-      }
-    }
-  }, [isInteractiveMode, viewMode])
-
+  
   const filteredProjects = selectedCategory === 'all' 
     ? projects 
     : projects.filter(p => p.category === selectedCategory)
 
-  // Group projects by category for accordion view
-  const projectsByCategory = categories.reduce((acc, category) => {
-    if (category.id !== 'all') {
-      acc[category.id] = projects.filter(p => p.category === category.id)
-    }
-    return acc
-  }, {} as Record<string, typeof projects>)
-const projectsData = projects;
-const toggleCategory = (categoryId: string) => {
-    const newExpanded = new Set(expandedCategories)
-    if (newExpanded.has(categoryId)) {
-      newExpanded.delete(categoryId)
-    } else {
-      newExpanded.add(categoryId)
-    }
-    setExpandedCategories(newExpanded)
-  }
+  const displayProjects = filteredProjects // Show all projects
 
-  const toggleAllCategories = () => {
-    if (expandedCategories.size === categories.length - 1) {
-      setExpandedCategories(new Set())
-    } else {
-      setExpandedCategories(new Set(categories.filter(c => c.id !== 'all').map(c => c.id)))
+  // Auto-play for carousel
+  useEffect(() => {
+    if (isAutoPlaying && viewMode === '3d-carousel') {
+      const interval = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % displayProjects.length)
+      }, 3000)
+      return () => clearInterval(interval)
     }
-  }
+  }, [isAutoPlaying, viewMode, displayProjects.length])
 
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -420,163 +521,260 @@ const toggleCategory = (categoryId: string) => {
     }
   }
 return (
-    // <section ref={ref} id="projects" className="py-20 bg-gradient-to-b from-slate-800 to-slate-900 relative overflow-hidden"></section>
-    <section ref={ref} id="projects" className="py-32 bg-gradient-to-b from-slate-800 to-slate-900 relative overflow-hidden">
-      {/* Background Cyber-Grid */}
-      {/* <div className="absolute inset-0 opacity-10" 
-           style={{ backgroundImage: 'radial-gradient(#3b82f6 0.5px, transparent 0.5px)', backgroundSize: '30px 30px' }} /> */}
- 
-      <div className="max-w-7xl mx-auto px-4">
-              <div className="absolute top-32 left-20 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-1/3 right-32 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute bottom-20 left-1/2 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl animate-pulse delay-500" />
+    <section ref={ref} id="projects" className="py-16 sm:py-20 md:py-24 lg:py-32 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+      {/* Debug Image Loading */}
+      <ImageDebugger />
+      
+      {/* Smooth 3D Background */}
+      <Smooth3DBackground />
         
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* HEADER SECTION */}
-        <div className="flex flex-col lg:flex-row items-center justify-between mb-12 md:mb-16 lg:mb-20 gap-6 lg:gap-8">
-          <motion.div initial={{ opacity: 0, x: -50 }} animate={inView ? { opacity: 1, x: 0 } : {}} className="text-center lg:text-left">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-3 md:mb-4">
+        <div className="text-center mb-12 sm:mb-16 md:mb-20">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }} 
+            animate={inView ? { opacity: 1, y: 0 } : {}} 
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="mb-8"
+          >
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-4 sm:mb-6">
               <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                 FEATURED WORK
               </span>
             </h2>
-            <p className="text-gray-400 text-base md:text-lg lg:text-xl font-medium px-4 lg:px-0">Mobile & Web Solutions</p>
+            <p className="text-gray-400 text-lg sm:text-xl md:text-2xl font-medium max-w-2xl mx-auto">
+              Mobile & Web Solutions That Make a Difference
+            </p>
           </motion.div>
 
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setViewMode(viewMode === 'accordion' ? '3d-showcase' : 'accordion')}
-            className="px-6 py-3 rounded-xl bg-white/5 backdrop-blur-xl border border-white/10 text-white font-bold shadow-2xl hover:bg-white/10 transition-all flex items-center gap-3 text-sm md:text-base"
+          {/* CATEGORY FILTERS */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={inView ? { opacity: 1, y: 0 } : {}} 
+            transition={{ duration: 0.4, delay: 0.3 }}
+            className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-8 sm:mb-12"
           >
-            {viewMode === 'accordion' ? <><FaRocket /> <span className="hidden sm:inline">Try 3D Experience</span><span className="sm:hidden">3D</span></> : <><FaCode /> <span className="hidden sm:inline">Switch to List View</span><span className="sm:hidden">List</span></>}
-          </motion.button>
+            {categories.map((category) => (
+              <motion.button
+                key={category.id}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setSelectedCategory(category.id)}
+                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base transition-all border ${
+                  selectedCategory === category.id
+                    ? 'bg-blue-600 text-white border-blue-400 shadow-lg shadow-blue-600/30'
+                    : 'bg-white/10 text-gray-300 border-white/20 hover:bg-white/20 hover:text-white'
+                }`}
+              >
+                <category.icon className="inline mr-2" size={16} />
+                {category.name}
+              </motion.button>
+            ))}
+          </motion.div>
+
+          {/* VIEW MODE TOGGLE */}
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={inView ? { opacity: 1 } : {}} 
+            transition={{ delay: 0.4 }}
+            className="flex justify-center gap-2 sm:gap-4"
+          >
+            {[
+              { mode: 'showcase' as const, label: 'Showcase', icon: FaStar },
+              { mode: '3d-carousel' as const, label: '3D Carousel', icon: FaCube },
+              { mode: 'grid' as const, label: 'Grid View', icon: FaLayerGroup }
+            ].map(({ mode, label, icon: Icon }) => (
+              <motion.button
+                key={mode}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setViewMode(mode)}
+                className={`px-3 sm:px-4 py-2 sm:py-3 rounded-lg font-bold text-xs sm:text-sm transition-all flex items-center gap-2 ${
+                  viewMode === mode
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                    : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                }`}
+              >
+                <Icon size={14} />
+                <span className="hidden sm:inline">{label}</span>
+              </motion.button>
+            ))}
+          </motion.div>
         </div>
 
-        {/* --- 3D SHOWCASE MODE --- */}
+        {/* --- SHOWCASE MODE --- */}
         <AnimatePresence mode="wait">
-          {viewMode === '3d-showcase' ? (
+          {viewMode === 'showcase' && (
             <motion.div
-              key="3d"
+              key="showcase"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -50 }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+            >
+              {displayProjects.map((project: Project, index: number) => (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ y: -10, scale: 1.02 }}
+                  className="group bg-slate-800/60 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-white/10 overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300"
+                >
+                  <div className="h-48 sm:h-52 md:h-56 overflow-hidden">
+                    <RobustImage project={project} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                  </div>
+                  
+                  <div className="p-4 sm:p-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusBadge(project.status)}`}>
+                        {project.status.toUpperCase()}
+                      </span>
+                      <div className="flex items-center gap-1 text-yellow-400">
+                        <FaStar size={12} />
+                        <span className="text-xs font-bold">{project.rating}</span>
+                      </div>
+                    </div>
+                    
+                    <h3 className="text-lg sm:text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-blue-400 transition-colors">
+                      {project.title}
+                    </h3>
+                    
+                    <p className="text-gray-400 text-sm mb-4 line-clamp-3">
+                      {project.description}
+                    </p>
+                    
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {project.technologies.slice(0, 3).map((tech, i) => (
+                        <span key={i} className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs border border-blue-500/30">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                    
+                    <a 
+                      href={project.liveUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white flex items-center justify-center gap-2 font-bold hover:from-blue-500 hover:to-purple-500 transition-all shadow-lg"
+                    >
+                      VIEW PROJECT <FaExternalLinkAlt size={12} />
+                    </a>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
+          {/* --- 3D CAROUSEL MODE --- */}
+          {viewMode === '3d-carousel' && (
+            <motion.div
+              key="carousel"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              className="relative h-[500px] sm:h-[600px] md:h-[700px] w-full flex items-center justify-center"
+              className="relative h-[400px] sm:h-[500px] md:h-[600px] w-full flex items-center justify-center"
               style={{ perspective: '2000px' }}
             >
               <div className="relative w-full h-full flex items-center justify-center" style={{ transformStyle: 'preserve-3d' }}>
-                {projectsData.slice(0, 6).map((project, index) => { // Slicing to 6 for performance in 3D
-                  const total = 6;
+                {displayProjects.map((project: Project, index: number) => {
+                  const total = displayProjects.length;
                   const angleStep = (2 * Math.PI) / total;
                   const currentAngle = index * angleStep;
-                  const orbitRadius = 250; // Reduced for mobile
+                  const orbitRadius = 200;
+                  const isActive = index === currentIndex;
 
                   return (
                     <motion.div
                       key={project.id}
                       animate={{
-                        rotateY: isAutoRotating ? [0, 360] : 0,
+                        rotateY: isAutoPlaying ? [0, 360] : 0,
                         x: Math.cos(currentAngle) * orbitRadius,
                         z: Math.sin(currentAngle) * orbitRadius,
+                        scale: isActive ? 1.2 : 0.8,
+                        opacity: isActive ? 1 : 0.6,
                       }}
                       transition={{
-                        rotateY: { duration: 30, repeat: Infinity, ease: "linear" },
-                        default: { duration: 1, type: "spring" }
+                        rotateY: { duration: 20, repeat: Infinity, ease: "linear" },
+                        default: { duration: 0.5, type: "spring" }
                       }}
                       style={{ transformStyle: 'preserve-3d' }}
                       className="absolute"
+                      onClick={() => setCurrentIndex(index)}
                     >
                       <motion.div 
-                        whileHover={{ scale: 1.1, z: 100, rotateY: 0 }}
-                        className="w-56 sm:w-64 md:w-72 h-[380px] sm:h-[400px] md:h-[420px] bg-slate-900/80 backdrop-blur-2xl rounded-[24px] sm:rounded-[28px] md:rounded-[32px] border border-white/20 p-4 sm:p-5 md:p-6 shadow-2xl group overflow-hidden"
+                        whileHover={{ scale: isActive ? 1.1 : 1.05, z: 50 }}
+                        className="w-48 sm:w-56 md:w-64 h-80 sm:h-90 md:h-96 bg-slate-800/80 backdrop-blur-2xl rounded-2xl border border-white/20 p-4 shadow-2xl cursor-pointer overflow-hidden"
                       >
-                        <div className="h-32 sm:h-36 md:h-40 rounded-xl sm:rounded-2xl overflow-hidden mb-4 sm:mb-6 border border-white/5">
-                          <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                       
-                       
+                        <div className="h-32 sm:h-36 md:h-40 rounded-xl overflow-hidden mb-4">
+                          <RobustImage project={project} className="w-full h-full object-cover" />
                         </div>
-                        <h3 className="text-base sm:text-lg md:text-xl font-bold text-white mb-2 line-clamp-2">{project.title}</h3>
-                        <p className="text-gray-400 text-xs sm:text-sm md:text-sm mb-4 sm:mb-6 line-clamp-3">{project.description}</p>
-                        
-                        <div className="flex gap-2 mb-4 sm:mb-6">
-                           <span className="bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full text-[8px] sm:text-[10px] font-bold border border-blue-500/30">
-                             {project.category.toUpperCase()}
-                           </span>
-                           <span className="bg-green-500/20 text-green-400 px-2 py-1 rounded-full text-[8px] sm:text-[10px] font-bold border border-green-500/30">
-                             ⭐ {project.rating}
-                           </span>
+                        <h3 className="text-sm sm:text-base font-bold text-white mb-2 line-clamp-2">{project.title}</h3>
+                        <p className="text-gray-400 text-xs mb-3 line-clamp-2">{project.description}</p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-yellow-400 text-xs">⭐ {project.rating}</span>
+                          <span className="text-blue-400 text-xs">{project.category.toUpperCase()}</span>
                         </div>
-
-                        <a href={project.liveUrl} target="_blank" className="w-full py-2 sm:py-3 rounded-lg sm:rounded-xl bg-blue-600 text-white flex items-center justify-center gap-2 font-bold text-xs sm:text-sm hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20">
-                          VIEW PROJECT <FaExternalLinkAlt size={10} />
-                        </a>
                       </motion.div>
                     </motion.div>
                   );
                 })}
               </div>
 
-              {/* Orbit Controls */}
+              {/* Carousel Controls */}
               <div className="absolute bottom-4 flex gap-2 sm:gap-4">
-                <button onClick={() => setIsAutoRotating(!isAutoRotating)} className="px-3 sm:px-6 py-2 rounded-full bg-white/10 text-white text-xs font-bold border border-white/20 hover:bg-white/20">
-                  {isAutoRotating ? "⏸ PAUSE" : "▶ RESUME"}
+                <button 
+                  onClick={() => setIsAutoPlaying(!isAutoPlaying)} 
+                  className="px-4 py-2 rounded-full bg-white/10 text-white text-xs font-bold border border-white/20 hover:bg-white/20"
+                >
+                  {isAutoPlaying ? "⏸ PAUSE" : "▶ PLAY"}
+                </button>
+                <button 
+                  onClick={() => setCurrentIndex((prev) => (prev - 1 + displayProjects.length) % displayProjects.length)}
+                  className="px-4 py-2 rounded-full bg-white/10 text-white text-xs font-bold border border-white/20 hover:bg-white/20"
+                >
+                  ← PREV
+                </button>
+                <button 
+                  onClick={() => setCurrentIndex((prev) => (prev + 1) % displayProjects.length)}
+                  className="px-4 py-2 rounded-full bg-white/10 text-white text-xs font-bold border border-white/20 hover:bg-white/20"
+                >
+                  NEXT →
                 </button>
               </div>
             </motion.div>
-          ) : (
-            /* --- ACCORDION VIEW MODE --- */
-            <motion.div key="accordion" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }} className="space-y-4 md:space-y-6">
-              {['android', 'ios', 'web'].map((cat) => (
-                <div key={cat} className="bg-white/5 backdrop-blur-md rounded-2xl md:rounded-3xl border border-white/10 overflow-hidden">
-                  <button onClick={() => toggleCategory(cat)} className="w-full px-6 md:px-8 lg:px-10 py-6 md:py-8 flex items-center justify-between group hover:bg-white/5 transition-all">
-                    <div className="flex items-center gap-4 md:gap-6">
-                      <div className="p-3 md:p-4 bg-blue-500/20 rounded-xl md:rounded-2xl text-blue-400 group-hover:scale-110 transition-transform">
-                        {cat === 'android' ? <FaMobile size={20} /> : cat === 'ios' ? <FaMobile size={20} /> : <FaDesktop size={20} />}
-                      </div>
-                      <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white uppercase tracking-wider">{cat} Projects</h3>
-                    </div>
-                    <motion.div animate={{ rotate: expandedCategories.has(cat) ? 180 : 0 }}>
-                      <FaChevronDown className="text-white opacity-50" />
-                    </motion.div>
-                  </button>
-                  
-                  <AnimatePresence>
-                    {expandedCategories.has(cat) && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="px-6 md:px-8 lg:px-10 pb-6 md:pb-8">
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                            {projectsByCategory[cat]?.map((project) => (
-                              <motion.div
-                                key={project.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.1 }}
-                                className="bg-slate-800/50 backdrop-blur-sm rounded-xl md:rounded-2xl p-4 md:p-6 border border-white/10 hover:border-blue-500/30 transition-all duration-300 group"
-                              >
-                                <div className="h-24 sm:h-28 md:h-32 rounded-lg overflow-hidden mb-4">
-                                  <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
-                                </div>
-                                <h4 className="text-sm md:text-base font-bold text-white mb-2 line-clamp-2">{project.title}</h4>
-                                <p className="text-gray-400 text-xs md:text-sm mb-4 line-clamp-2">{project.description}</p>
-                                <div className="flex items-center justify-between">
-                                  <span className="text-blue-400 text-xs md:text-sm">⭐ {project.rating}</span>
-                                  <a href={project.liveUrl} target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">
-                                    <FaExternalLinkAlt size={12} />
-                                  </a>
-                                </div>
-                              </motion.div>
-                            ))}
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+          )}
+
+          {/* --- GRID MODE --- */}
+          {viewMode === 'grid' && (
+            <motion.div
+              key="grid"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -50 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+            >
+              {displayProjects.map((project: Project, index: number) => (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.05 }}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                  className="bg-slate-800/40 backdrop-blur-sm rounded-xl p-4 border border-white/10 hover:border-blue-500/30 transition-all duration-300"
+                >
+                  <div className="h-24 sm:h-28 rounded-lg overflow-hidden mb-3">
+                    <RobustImage project={project} className="w-full h-full object-cover" />
+                  </div>
+                  <h4 className="text-sm font-bold text-white mb-2 line-clamp-2">{project.title}</h4>
+                  <p className="text-gray-400 text-xs mb-3 line-clamp-2">{project.description}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-blue-400 text-xs">⭐ {project.rating}</span>
+                    <a href={project.liveUrl} target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">
+                      <FaExternalLinkAlt size={12} />
+                    </a>
+                  </div>
+                </motion.div>
               ))}
             </motion.div>
           )}

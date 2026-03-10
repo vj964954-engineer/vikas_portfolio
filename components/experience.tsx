@@ -151,7 +151,7 @@ export default function Experience() {
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.4 }}
           className="text-center mb-12 md:mb-16 lg:mb-20"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 md:mb-6">
@@ -180,7 +180,7 @@ export default function Experience() {
                   key={exp.id}
                   initial={{ opacity: 0, x: isLeft ? -100 : 100 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.8, delay: index * 0.2 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
                   className={`relative flex items-start ${
                     isLeft ? 'justify-start sm:justify-start' : 'justify-start sm:justify-end'
                   }`}
@@ -196,7 +196,7 @@ export default function Experience() {
                     <div className="flex items-start gap-2 sm:gap-3 md:gap-4 lg:gap-6">
                       <motion.div
                         whileHover={{ rotate: 360 }}
-                        transition={{ duration: 0.5 }}
+                        transition={{ duration: 0.3 }}
                         className={`p-2 sm:p-3 md:p-4 rounded-lg sm:rounded-xl md:rounded-2xl bg-gradient-to-r ${getTypeColor(exp.type)} text-white flex-shrink-0`}
                       >
                         <Icon className="text-sm sm:text-base md:text-lg lg:text-xl" />
