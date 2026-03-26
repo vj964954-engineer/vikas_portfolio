@@ -40,10 +40,11 @@ export default function Home() {
         <Header />
         <Hero />
         <About />
-        <Experience />
+        
         <Projects />
         
         <Skills />
+        <Experience />
         <Blog />
         <Contact />
         <Footer />
