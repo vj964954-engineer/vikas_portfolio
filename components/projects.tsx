@@ -40,7 +40,7 @@ const projects: Project[] = [
     image: "https://play-lh.googleusercontent.com/fXHbDXktSprcSmu5RqAgiMFBswipCBgtXK_Zzvy_dW5GDfSMxRfi4cVjHAANUXbFjrbyP3kcF0gSaBWVB28Dlg=w240-h480-rw",  
     technologies: ["Android", "Java", "Agora SDK", "Real-time Audio", "Firebase", "Gamification"],
     category: "android",
-    liveUrl: "https://play.google.com/store/apps/details?id=com.funzo.chat&pli=1",
+    liveUrl: "https://play.google.com/store/apps/details?id=com.ereotect.funzo&hl=en_IN",
     rating: 4.8,  
     views: "100+",  
     status: "completed"
