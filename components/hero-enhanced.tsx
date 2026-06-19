@@ -313,7 +313,7 @@ export default function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [clickCount, setClickCount] = useState(0)
   const [showConfetti, setShowConfetti] = useState(false)
-  const [isDownloading, setIsDownloading] = useState(false)
+  const [ising, setIsing] = useState(false)
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -326,18 +326,18 @@ export default function Hero() {
     setTimeout(() => setShowConfetti(false), 2000)
   }
 
-  const handleDownload = () => {
-    setIsDownloading(true)
+  const handle = () => {
+    setIsing(true)
     const resumeUrl = '/resume.pdf' 
     const link = document.createElement('a')
     link.href = resumeUrl
-    link.download = 'Vikas-Kumar-Jain-Resume.pdf'
+    link. = 'Vikas-Kumar-Jain-Resume.pdf'
     
     setTimeout(() => {
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
-      setIsDownloading(false)
+      setIsing(false)
       setClickCount(prev => prev + 1)
       setShowConfetti(true)
       setTimeout(() => setShowConfetti(false), 2000)
@@ -461,15 +461,15 @@ export default function Hero() {
             className="flex flex-col sm:flex-row gap-4 sm:gap-6 md:gap-8 justify-center mb-8 sm:mb-10 md:mb-12 px-4 sm:px-6"
           >
             <motion.button 
-              onClick={handleDownload} 
-              disabled={isDownloading} 
+              onClick={handle} 
+              disabled={ising} 
               whileHover={{ scale: 1.05, rotateX: 10 }} 
               className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-6 sm:px-8 md:px-10 lg:px-14 py-3 sm:py-4 md:py-5 lg:py-6 rounded-full font-bold flex items-center justify-center gap-3 sm:gap-4 border-b-4 border-blue-900 shadow-2xl overflow-hidden group min-h-[44px] sm:min-h-[48px]"
             >
                <span className="relative z-10 flex items-center gap-3 sm:gap-4">
-                 {isDownloading ? 
+                 {ising ? 
                    <><FaRocket className="animate-spin text-lg sm:text-xl" /> <span className="hidden sm:inline text-base sm:text-lg">Compiling...</span><span className="sm:hidden text-sm">Loading...</span></> : 
-                   <><FaDownload className="text-lg sm:text-xl" /> <span className="hidden xs:inline text-base sm:text-lg">Download Resume</span><span className="xs:hidden text-sm">Download</span></>
+                   <><Fa className="text-lg sm:text-xl" /> <span className="hidden xs:inline text-base sm:text-lg">Download Resume</span><span className="xs:hidden text-sm">Resume</span></>
                  }
                </span>
             </motion.button>
