@@ -469,7 +469,7 @@ export default function Hero() {
                <span className="relative z-10 flex items-center gap-3 sm:gap-4">
                  {ising ? 
                    <><FaRocket className="animate-spin text-lg sm:text-xl" /> <span className="hidden sm:inline text-base sm:text-lg">Compiling...</span><span className="sm:hidden text-sm">Loading...</span></> : 
-                   <><Fa className="text-lg sm:text-xl" /> <span className="hidden xs:inline text-base sm:text-lg">Download Resume</span><span className="xs:hidden text-sm">Download</span></>
+                   <><Fa className="text-lg sm:text-xl" /> <span className="hidden xs:inline text-base sm:text-lg">Download Resume</span><span className="xs:hidden text-sm">Resume</span></>
                  }
                </span>
             </motion.button>
