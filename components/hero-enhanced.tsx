@@ -326,24 +326,39 @@ export default function Hero() {
     setTimeout(() => setShowConfetti(false), 2000)
   }
 
-const handle = () => {
-  setIsing(true)
-  const resumeUrl = '/resume.pdf' 
-  const link = document.createElement('a')
-  link.href = resumeUrl
-  
-   link.download = 'Vikas-Kumar-Jain-Resume.pdf'
-  
-  setTimeout(() => {
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    setIsing(false)
-    setClickCount(prev => prev + 1)
-    setShowConfetti(true)
-    setTimeout(() => setShowConfetti(false), 2000)
-  }, 1500)
-}
+  const handle = () => {
+
+    setIsing(true)
+
+    const resumeUrl = '/resume.pdf' 
+
+    const link = document.createElement('a')
+
+    link.href = resumeUrl
+
+    link. = 'Vikas-Kumar-Jain-Resume.pdf'
+
+    
+
+    setTimeout(() => {
+
+      document.body.appendChild(link)
+
+      link.click()
+
+      document.body.removeChild(link)
+
+      setIsing(false)
+
+      setClickCount(prev => prev + 1)
+
+      setShowConfetti(true)
+
+      setTimeout(() => setShowConfetti(false), 2000)
+
+    }, 1500)
+
+  }
 
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact')
