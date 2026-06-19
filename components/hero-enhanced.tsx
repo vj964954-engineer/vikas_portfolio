@@ -327,37 +327,23 @@ export default function Hero() {
   }
 
   const handle = () => {
-
     setIsing(true)
-
     const resumeUrl = '/resume.pdf' 
-
     const link = document.createElement('a')
-
     link.href = resumeUrl
-
-    link. = 'Vikas-Kumar-Jain-Resume.pdf'
-
     
-
+    // CORRECTED: Added the 'download' property
+    link.download = 'Vikas-Kumar-Jain-Resume.pdf'
+    
     setTimeout(() => {
-
       document.body.appendChild(link)
-
       link.click()
-
       document.body.removeChild(link)
-
       setIsing(false)
-
       setClickCount(prev => prev + 1)
-
       setShowConfetti(true)
-
       setTimeout(() => setShowConfetti(false), 2000)
-
     }, 1500)
-
   }
 
   const scrollToContact = () => {
@@ -485,7 +471,7 @@ export default function Hero() {
                <span className="relative z-10 flex items-center gap-3 sm:gap-4">
                  {ising ? 
                    <><FaRocket className="animate-spin text-lg sm:text-xl" /> <span className="hidden sm:inline text-base sm:text-lg">Compiling...</span><span className="sm:hidden text-sm">Loading...</span></> : 
-                   <><Fa className="text-lg sm:text-xl" /> <span className="hidden xs:inline text-base sm:text-lg">Download Resume</span><span className="xs:hidden text-sm">Download</span></>
+                   <><FaDownload className="text-lg sm:text-xl" /> <span className="hidden xs:inline text-base sm:text-lg">Download Resume</span><span className="xs:hidden text-sm">Download</span></>
                  }
                </span>
             </motion.button>
