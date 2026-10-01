@@ -1,238 +1,32 @@
-# Vikas Kumar Jain - App Developer Portfolio
+# Vikas Kumar Jain — Android & iOS Engineer Portfolio (v4)
 
-A modern, animated portfolio website built with Next.js 16, React 19, and Tailwind CSS featuring 3D animations, smooth motion effects, and a professional design.
+Next.js 14 · React 18 · Tailwind CSS 4 · Framer Motion
 
-## Features
+## Run
+```bash
+npm install --legacy-peer-deps
+npm run dev      # http://localhost:3000
+npm run build && npm start
+```
 
-- **3D Animated Hero Section** - Particle background with depth effects
-- **Interactive Projects Showcase** - 5 featured projects with 3D parallax effects
-- **Smooth Animations** - Framer Motion and custom CSS animations throughout
-- **Responsive Design** - Works perfectly on mobile, tablet, and desktop
-- **Contact Form** - Fully functional contact form with validation
-- **Modern Tech Stack** - Next.js 16, React 19, Tailwind CSS v4, TypeScript
+## Edit content
+All text, apps, experience, skills and articles live in `lib/data.ts`.
 
-## Tech Stack
+## v4 — what changed
+- **Fixed: pinned "Selected work" scroll** — `body { overflow-x: hidden }` turned the body into its own scroll container, which breaks `position: sticky`. Removed; horizontal overflow is now clipped on `html` only. Track widths use % instead of `vw` so a desktop scrollbar can't misalign the slides.
+- **Fixed: custom CSS beating Tailwind** — `.card` and the `min-width: 0` reset were outside Tailwind's layers, so classes like `rounded-full` / `min-w-*` were silently ignored. They now live in `@layer`.
+- **Fixed: headlines splitting mid-word** on narrow phones (`overflow-wrap: anywhere` → `break-word`).
+- **New X/Y-axis charts** (`components/growth-charts.tsx`): area ⇄ bar toggle, labelled axes, hover tooltip, ▲/▼ change badge vs previous quarter. Two charts are computed from `lib/data.ts` (apps in development, toolbox growth).
+- **Your own chart data**: add points to `metricSeries` at the bottom of `lib/data.ts` (see the commented example) and a new chart appears automatically.
+- **New "Toolkit" section** (`components/engineering.tsx`): clickable release pipeline + Android ⇄ iOS concept map. Edit the `pipeline` and `layers` arrays to reuse it for any mobile developer.
 
-- **Framework**: Next.js 16
-- **UI Library**: React 19
-- **Styling**: Tailwind CSS v4
-- **Language**: TypeScript
-- **Components**: shadcn/ui
-- **Animations**: Custom CSS animations
-- **Form Handling**: React Hook Form + Zod validation
+## v3 — what changed
+- **New "Insights" section** (`components/insights.tsx`): ring gauges (crash-free, completion, load time, rating), platform donut, filterable technology bar chart and a career + releases Gantt timeline. All numbers are computed from `lib/data.ts` — edit the data and the charts update.
+- **Responsive fix**: page no longer scrolls sideways on phones (grid children can shrink; code card scrolls inside itself). Verified at 320 / 375 / 390 / 414 / 768 / 820 / 1024 / 1280 / 1440 / 1920 px on both Android and iOS styles.
+- Nav links show from 1280px; below that a menu button; phones and small tablets also get the bottom tab bar.
 
-## Projects Included
-
-1. **Employee Management System** - Java, Spring Boot, Angular
-2. **BMI Calculator** - Java, Spring Boot, Angular
-3. **Food Order App** - Java, Spring Boot, Angular
-4. **Search Application** - Java, Spring Boot, Angular
-5. **InterApp Messaging with SQS** - AWS, Java, Spring Boot
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+ or higher
-- npm, yarn, pnpm, or bun package manager
-
-### Installation
-
-1. **Extract the ZIP file**
-   \`\`\`bash
-   unzip portfolio.zip
-   cd portfolio
-   \`\`\`
-
-2. **Install dependencies**
-   \`\`\`bash
-   npm install
-   # or
-   yarn install
-   # or
-   pnpm install
-   \`\`\`
-
-3. **Run the development server**
-   \`\`\`bash
-   npm run dev
-   # or
-   yarn dev
-   # or
-   pnpm dev
-   \`\`\`
-
-4. **Open in browser**
-   - Navigate to `http://localhost:3000`
-   - The portfolio will load with all animations and features
-
-### Build for Production
-
-\`\`\`bash
-npm run build
-npm start
-\`\`\`
-
-## Project Structure
-
-\`\`\`
-portfolio/
-├── app/
-│   ├── layout.tsx          # Root layout with metadata
-│   ├── page.tsx            # Main portfolio page
-│   └── globals.css         # Global styles and animations
-├── components/
-│   ├── header.tsx          # Navigation header
-│   ├── hero.tsx            # Hero section with 3D background
-│   ├── about.tsx           # About section with stats
-│   ├── projects.tsx        # Projects showcase
-│   ├── skills.tsx          # Skills section
-│   ├── experience.tsx      # Experience timeline
-│   ├── contact.tsx         # Contact form
-│   ├── footer.tsx          # Footer section
-│   └── ui/                 # shadcn/ui components
-├── public/
-│   └── [project images]    # Project showcase images
-├── package.json            # Dependencies
-└── README.md              # This file
-\`\`\`
-
-## Features Breakdown
-
-### Hero Section
-- Animated 3D particle background
-- Gradient text animations
-- Call-to-action buttons with hover effects
-- Smooth scroll navigation
-
-### Projects Section
-- 5 featured projects with images
-- 3D parallax hover effects
-- Technology badges
-- Links to project details
-- Animated background elements
-
-### Skills Section
-- Organized by category (Backend, Frontend, Cloud)
-- Interactive category cards
-- Animated skill badges
-- Hover effects with shine animations
-
-### Experience Section
-- Timeline-based layout
-- Animated timeline dots
-- Company and role information
-- Technology stack for each role
-- Smooth transitions
-
-### Contact Section
-- Functional contact form
-- Form validation with Zod
-- Email field with proper spacing
-- Message textarea with animations
-- Social media links
-- Animated background elements
-
-### Footer
-- Multiple sections (Services, Quick Links, Contact)
-- Social media links
-- Copyright information
-- Animated hover effects
-
-## Customization
-
-### Update Your Information
-
-Edit the following files to customize the portfolio:
-
-1. **Personal Info** - `app/layout.tsx` (title and description)
-2. **Hero Section** - `components/hero.tsx`
-3. **About Section** - `components/about.tsx`
-4. **Projects** - `components/projects.tsx`
-5. **Skills** - `components/skills.tsx`
-6. **Experience** - `components/experience.tsx`
-7. **Contact** - `components/contact.tsx`
-
-### Change Colors
-
-Edit `app/globals.css` to modify the color scheme:
-
-\`\`\`css
-@theme inline {
-  --color-primary: #2563eb;      /* Blue */
-  --color-accent: #06b6d4;       /* Cyan */
-  --color-background: #0f172a;   /* Dark Blue */
-  --color-text: #f1f5f9;         /* Light Text */
-}
-\`\`\`
-
-### Add More Projects
-
-Edit `components/projects.tsx` and add new project objects to the `projects` array.
-
-## Performance
-
-- Optimized animations with CSS transforms
-- Lazy loading for images
-- Efficient component rendering
-- Minimal JavaScript bundle size
-- Fast page load times
-
-## Browser Support
-
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
-- Mobile browsers (iOS Safari, Chrome Mobile)
-
-## Troubleshooting
-
-### Port 3000 Already in Use
-
-\`\`\`bash
-npm run dev -- -p 3001
-\`\`\`
-
-### Dependencies Installation Issues
-
-\`\`\`bash
-# Clear cache and reinstall
-rm -rf node_modules package-lock.json
-npm install
-\`\`\`
-
-### Animations Not Working
-
-- Clear browser cache (Ctrl+Shift+Delete or Cmd+Shift+Delete)
-- Ensure JavaScript is enabled
-- Try a different browser
-
-## Deployment
-
-### Deploy to Vercel (Recommended)
-
-1. Push your code to GitHub
-2. Go to [vercel.com](https://vercel.com)
-3. Import your repository
-4. Click Deploy
-
-### Deploy to Other Platforms
-
-The portfolio can be deployed to any platform that supports Next.js:
-- Netlify
-- AWS Amplify
-- DigitalOcean
-- Heroku
-- Railway
-
-## License
-
-This portfolio is open source and available for personal use.
-
-## Contact
-
-For questions or feedback, please use the contact form on the portfolio website.
-
----
-
-**Built with Next.js 16 and React 19**
+## v2 highlights
+- 3 theme axes: Android ⇄ iOS · dark ⇄ light · 5 accent colours (palette button in the nav). All remembered between visits.
+- Platform-native UI: Material 3 navigation bar / FAB / filled fields / springy entrances on Android; glass tab bar / inset lists / blur-in entrances / pill buttons on iOS.
+- Scroll: progress bar, section dot rail, pinned horizontal case-study scroll (desktop) / swipe carousel (mobile), scroll-drawn timeline, hero parallax, count-up stats.
+- Per-section features: rotating role headline + tilting phone, Kotlin⇄Swift code card, app bottom sheet + grid/list view, skill chips that search the app library, certificate lightbox, article search, contact quick-start chips + copy buttons.
