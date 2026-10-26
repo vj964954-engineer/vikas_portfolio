@@ -170,7 +170,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.05 }}
             className="h-display text-5xl sm:text-6xl lg:text-7xl"
           >
-            Hi, I'm Vikas.
+          Hi, I'm Vikas Kumar Jain.
             <span className="block mt-1 text-[0.62em] leading-[1.1] text-fg/90">I build&nbsp;<RoleRotator /></span>
           </motion.h1>
 
