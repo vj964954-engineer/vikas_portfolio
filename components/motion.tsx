@@ -4,7 +4,7 @@ import { AnimatePresence, animate, motion, useInView, useReducedMotion, useScrol
 import { ArrowUp } from "lucide-react"
 import { hl } from "./codefx"
 
-const EASE = [0.22, 1, 0.36, 1] as const
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 const reducedNow = () => typeof window !== "undefined" && matchMedia("(prefers-reduced-motion:reduce)").matches
 
 /** "99%+", "−40%", "4.2★", "50,000+" → counts up to the number when `on` turns true. */
@@ -163,7 +163,7 @@ export function BackToTop() {
   const { scrollYProgress } = useScroll()
   const len = useSpring(scrollYProgress, { stiffness: 120, damping: 30 })
   const opacity = useTransform(scrollYProgress, [0.03, 0.08], [0, 1])
-  const pe = useTransform(opacity, (v) => (v > 0.5 ? "auto" : "none"))
+  const pe = useTransform(opacity, (v): "auto" | "none" => (v > 0.5 ? "auto" : "none"))
   return (
     <motion.button
       type="button" aria-label="Back to top" style={{ opacity, pointerEvents: pe }}
