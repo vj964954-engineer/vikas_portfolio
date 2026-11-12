@@ -587,3 +587,13 @@ export interface MetricSeries {
   points: { label: string; value: number }[]
 }
 export const metricSeries: MetricSeries[] = []
+
+/* ───────────── Added in v5 ───────────── */
+export const ambassador = ["Campus Ambassador dashboard", "Personal referral code", "Points history", "Education Loan"]
+
+export const services = [
+  { title: "Android apps", text: "Native Kotlin and Java apps with Jetpack Compose or XML, MVVM, Hilt, Room and Retrofit.", tags: ["Kotlin", "Compose", "MVVM"] },
+  { title: "iOS apps", text: "SwiftUI and UIKit apps with Core Data, HealthKit and clean architecture.", tags: ["SwiftUI", "UIKit", "Core Data"] },
+  { title: "APIs and payments", text: "REST integrations, Firebase, real-time voice with Agora, Razorpay and Stripe checkout.", tags: ["Retrofit", "Firebase", "Razorpay"] },
+  { title: "Release and upkeep", text: "CI/CD with GitHub Actions and Fastlane, Play Store and App Store submission, tests and bug fixes.", tags: ["Fastlane", "JUnit", "Espresso"] },
+]

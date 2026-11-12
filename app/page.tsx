@@ -1,38 +1,48 @@
-import { PlatformProvider } from "@/components/platform-provider"
+import { getIcons } from "@/lib/icons"
+import { IconsProvider } from "@/components/icons"
+import { Shell } from "@/components/fx"
 import Nav from "@/components/nav"
 import Hero from "@/components/hero"
-import About from "@/components/about"
-import Featured from "@/components/featured"
-import Apps from "@/components/apps"
-import Insights from "@/components/insights"
-import Engineering from "@/components/engineering"
-import Experience from "@/components/experience"
-import Skills from "@/components/skills"
-import Credentials from "@/components/credentials"
-import Writing from "@/components/writing"
-import Contact from "@/components/contact"
-import Footer from "@/components/footer"
-import AppChrome from "@/components/app-chrome"
+import { About, Skills, Experience, Projects, Services } from "@/components/sections"
+import { Journey } from "@/components/journey"
+import { BackToTop, Divider, SectionRail } from "@/components/motion"
+import { Ticker } from "@/components/ticker"
+import { Insights } from "@/components/graphics"
+import { Writing } from "@/components/writing"
+import { Contact, Footer } from "@/components/contact"
 
-export default function Home() {
+export const revalidate = 86400
+
+export default async function Home() {
+  const icons = await getIcons()
   return (
-    <PlatformProvider>
-      <AppChrome />
+    <Shell>
+      <IconsProvider map={icons}>
       <Nav />
-      <main>
+      <main id="main">
         <Hero />
+        <Journey />
+        <Ticker />
         <About />
-        <Featured />
-        <Apps />
-        <Insights />
-        <Engineering />
-        <Experience />
+        <Divider />
         <Skills />
-        <Credentials />
+        <Divider />
+        <Experience />
+        <Divider />
+        <Projects />
+        <Divider />
+        <Insights />
+        <Divider />
+        <Services />
+        <Divider />
         <Writing />
+        <Divider />
         <Contact />
       </main>
       <Footer />
-    </PlatformProvider>
+      <SectionRail />
+      <BackToTop />
+      </IconsProvider>
+    </Shell>
   )
 }
